@@ -15,7 +15,8 @@ local
     | mergeMany cmp   [] [ys] = ys
     | mergeMany cmp (a::b::xss) yss =
       mergeMany cmp xss ((merge cmp a b [])::yss)
-    | mergeMany cmp xss yss = mergeMany cmp (xss @ yss) []
+
+    | mergeMany cmp xss yss = mergeMany cmp (List.rev (xss @ yss)) []
 in
 fun sort cmp lst = mergeMany cmp (map (fn x => [x]) lst) []
 end
