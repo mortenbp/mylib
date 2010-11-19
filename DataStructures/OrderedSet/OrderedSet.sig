@@ -2,7 +2,7 @@
 
 signature OrderedSet =
 sig
-    eqtype element
+    type element
     type t
 
     val empty      : t
@@ -32,6 +32,8 @@ sig
     val toList     : t -> element list
 
     val card       : t -> int
+
+    (* val power      : t -> t Set.t *)
 
     val partition  : (element -> bool) -> t -> t * t
     val filter     : (element -> bool) -> t -> t

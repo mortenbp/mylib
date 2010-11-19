@@ -4,6 +4,7 @@
 
 signature Layout =
 sig
+  (* infix ^^ ++ \ & \\ && <- *)
   include Pretty
 
   val println : int option -> t -> unit
@@ -76,10 +77,9 @@ sig
    * does nothing if it isn't. *)
   val fill : int -> t -> t
 
-
   val ++ : t * t -> t (* l ++ r = l ^^ txt " " ^^ r *)
-  val \  : t * t -> t (* l \\ r = l ^^ nl ^^ r      *)
-  val &  : t * t -> t (* l \ r  = l ^^ softnl ^^ r  *)
+  val \  : t * t -> t (* l \\ r = l ^^ ln ^^ r      *)
+  val &  : t * t -> t (* l \ r  = l ^^ softln ^^ r  *)
   val \\ : t * t -> t (* l \\ r = l ^^ brk ^^ r     *)
   val && : t * t -> t (* l && r = l ^^ softbrk ^^ r *)
 

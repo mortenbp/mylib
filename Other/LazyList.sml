@@ -22,7 +22,9 @@ fun split l =
       Cons x => SOME x
     | Nil    => NONE
 
-fun cons x = E $ Cons x
+fun consEager x = E $ Cons x
+
+fun cons (x, xs) = L (fn _ => Cons (F x, xs))
 
 fun singleton x = eager [x]
 
@@ -33,8 +35,7 @@ fun null l =
 
 infixr 5 @
 fun xs @ ys =
-    L
-      (fn _ =>
+    L (fn _ =>
           case F xs of
             Cons (x, xs) => Cons (x, xs @ ys)
           | Nil          => F ys
@@ -78,7 +79,7 @@ fun take (l, n) =
 
 fun drop (l, n) = tl ^* n $ l
 
-fun rev l = eager o List.rev o force $ l
+fun rev l = (eager o List.rev o force) l
 
 fun concat ls =
     L (fn _ =>
@@ -161,10 +162,13 @@ fun tabulate (n, f) =
       loop 0
     end
 
+exception Stop
 fun tabulateN f =
     let
       fun loop n =
-          L (fn _ => Cons (f n, loop (n + 1)))
+          L (fn _ => Cons (f n, loop (n + 1))
+                handle Stop => Nil
+            )
     in
       loop 0
     end
@@ -182,4 +186,16 @@ fun collate cmp (xs, ys) =
 
 fun allPairs xs ys =
     E Nil
+
+fun fromFile f =
+    let
+      val is = TextIO.openIn f
+      fun loop _ =
+          case TextIO.input1 is of
+            SOME c => Cons (c, L loop)
+          | NONE   => Nil before TextIO.closeIn is
+    in
+      L loop
+    end
+
 end
